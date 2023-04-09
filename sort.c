@@ -9,7 +9,6 @@ int extraMemoryAllocated;
  
 void swap(int* a, int* b)
 {
- 
     int temp = *a;
  
     *a = *b;
@@ -74,72 +73,64 @@ void heapSort(int arr[], int n)
         heapify(arr, i, 0);
     }
 }
-
-void merge(int arr[], int l, int m, int r)
-{
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
- 
-    /* create temp arrays */
-    int L[n1], R[n2];
- 
-    /* Copy data to temp arrays L[] and R[] */
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
- 
-    /* Merge the temp arrays back into arr[l..r]*/
-    i = 0; // Initial index of first subarray
-    j = 0; // Initial index of second subarray
-    k = l; // Initial index of merged subarray
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
-        }
-        else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
- 
-    /* Copy the remaining elements of L[], if there
-    are any */
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
- 
-    /* Copy the remaining elements of R[], if there
-    are any */
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-}
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void mergeSort(int pData[], int l, int r)
-{	 
-   {
-    if (l < r) {
-        // Same as (l+r)/2, but avoids overflow for
-        // large l and h
-        int m = l + (r - l) / 2;
- 
-        // Sort first and second halves
-        mergeSort(pData, l, m);
-        mergeSort(pData, m + 1, r);
- 
-        merge(pData, l, m, r);
-    }
-}
-
+{
+	if (l < r)
+	{
+		int middle = (l + r) / 2;
+		mergeSort(pData, l, middle);
+		mergeSort(pData, middle + 1, r);
+		int i, j, k;
+		int n1 = middle - l + 1;
+		int n2 = r - middle;
+		/* create temp arrays */
+		int *L = (int*) malloc(n1*sizeof(int));
+		int *R = (int*) malloc(n2*sizeof(int));
+		/* Copy data to temp arrays L[] and R[] */
+		for (i = 0; i < n1; i++)
+		L[i] = pData[l + i];
+		for (j = 0; j < n2; j++)
+		R[j] = pData[middle + 1+ j];
+		/* Merge the temp arrays back into arr[l..r]*/
+		i = 0; // Initial index of first subarray
+		j = 0; // Initial index of second subarray
+		k = l; // Initial index of merged subarray
+		while (i < n1 && j < n2)
+		{
+			if (L[i] <= R[j])
+			{
+				pData[k] = L[i];
+				i++;
+			}
+			else
+			{
+				pData[k] = R[j];
+				j++;
+			}
+			k++;
+		}
+		/* Copy the remaining elements of L[], if there
+		are any */
+		while (i < n1)
+		{
+			pData[k] = L[i];
+			i++;
+			k++;
+		}
+		/* Copy the remaining elements of R[], if there
+		are any */
+		while (j < n2)
+		{
+			pData[k] = R[j];
+			j++;
+			k++;
+		}
+		// Free memory	
+		free(L);
+		free(R);
+	}
 }
 
 // parses input file to an integer array
@@ -169,7 +160,6 @@ int parseData(char *inputFileName, int **ppData)
 
 		fclose(inFile);
 	}
-	
 	return dataSz;
 }
 
@@ -178,6 +168,7 @@ void printArray(int pData[], int dataSz) {
 	int i, sz = dataSz - 100;
     printf("\tData:\n\t");
     for (i = 0; i < 100; ++i) {
+        // If the size of input is greater it breaks from the function
         if (i >= dataSz) {
             printf("\n\n");
             return;
